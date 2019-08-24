@@ -5,13 +5,16 @@ buildscript {
     repositories {
         jcenter()
     }
-
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${spring_boot_version}"
         classpath 'com.bmuschko:gradle-tomcat-plugin:2.0'
     }
 }
-
+plugins {
+    id 'groovy'
+    id  'java'
+    id  'war'
+}
 apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'eclipse'
@@ -19,12 +22,16 @@ apply plugin: 'idea'
 apply plugin: "org.springframework.boot"
 apply plugin: 'com.bmuschko.tomcat'
 
+
 // JDK version source compatibility
 sourceCompatibility = 1.8
 // project version
 version = '1.0'
 // War file name
-war.baseName = 'jcg-gradle-war-example'
+war {
+    archiveBaseName = 'spring'
+    archiveExtension= 'war'
+}
 // Web directory, this overrides the default value "webapp"
 project.webAppDirName = 'WebContent'
 
@@ -44,12 +51,16 @@ sourceSets {
 
 // dependencies to run on tomcat, are mandatory for tomcat plugin
 dependencies {
-    def tomcatVersion = '7.0.57'
+//    def tomcatVersion = '7.0.57'
+//    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+//            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}"
+//    tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
+//        exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
+//    }
+    def tomcatVersion = '8.5.16'
     tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
-            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}"
-    tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
-        exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
-    }
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:8.5.2",
+            "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot
     compile ("org.springframework.boot:spring-boot:${spring_boot_version}")
     // https://mvnrepository.com/artifact/org.springframework/spring-web
@@ -75,5 +86,5 @@ dependencies {
 }
 
 // context where tomcat is deployed, by defautl localhost:8080/
-tomcatRun.contextPath = '/'
-tomcatRunWar.contextPath = '/'
+//tomcatRun.contextPath = '/'
+//tomcatRunWar.contextPath = '/'

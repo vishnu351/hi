@@ -28,7 +28,7 @@ public class Application extends SpringBootServletInitializer {
     @RestController
     public static class WarInitializerController {
 
-        @RequestMapping("/welcome")
+        @RequestMapping("/news")
         public String index() {
             return "Greetings from Spring Boot!";
         }
