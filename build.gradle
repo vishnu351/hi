@@ -1,0 +1,79 @@
+buildscript {
+    ext {
+        ext.spring_boot_version = '2.0.4.RELEASE'
+    }
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${spring_boot_version}"
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.0'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: "org.springframework.boot"
+apply plugin: 'com.bmuschko.tomcat'
+
+// JDK version source compatibility
+sourceCompatibility = 1.8
+// project version
+version = '1.0'
+// War file name
+war.baseName = 'jcg-gradle-war-example'
+// Web directory, this overrides the default value "webapp"
+project.webAppDirName = 'WebContent'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+// Set source directory
+sourceSets {
+        main {
+            java {
+                srcDir 'src'
+            }
+        }
+    }
+
+// dependencies to run on tomcat, are mandatory for tomcat plugin
+dependencies {
+    def tomcatVersion = '7.0.57'
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}"
+    tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
+        exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
+    }
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot
+    compile ("org.springframework.boot:spring-boot:${spring_boot_version}")
+    // https://mvnrepository.com/artifact/org.springframework/spring-web
+    compile group: 'org.springframework', name: 'spring-web', version: '5.1.5.RELEASE'
+// https://mvnrepository.com/artifact/org.springframework/spring-webmvc
+    compile group: 'org.springframework', name: 'spring-webmvc', version: '5.1.5.RELEASE'
+// https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api
+    compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.0.1'
+
+
+    // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+    providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
+
+    // Spring-boot stuffs
+   // providedRuntime "org.springframework.boot:spring-boot-starter-tomcat:${spring_boot_version}"
+    // tag::actuator[]
+    compile("org.springframework.boot:spring-boot-starter-actuator:${spring_boot_version}")
+    // end::actuator[]
+    // tag::tests[]
+   // testCompile("org.springframework.boot:spring-boot-starter-test:${spring_boot_version}")
+    // end::tests[]
+
+}
+
+// context where tomcat is deployed, by defautl localhost:8080/
+tomcatRun.contextPath = '/'
+tomcatRunWar.contextPath = '/'
